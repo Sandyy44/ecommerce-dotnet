@@ -1,0 +1,178 @@
+﻿@using ecommerce.Models
+@using ecommerce.ViewModel
+@model EcommerceViewModel
+@{
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Product Listing</title>
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                font-family: Arial, sans-serif;
+            }
+
+            body {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+
+            header {
+                background: #D9690F;
+                color: white;
+                padding: 5px 15px; 
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                position: sticky;
+                top: 0;
+                width: 100%;
+                z-index: 1000;
+            }
+
+            header h1 {
+                margin: 0;
+                font-size: 18px; 
+            }
+
+            nav a {
+                color: white;
+                text-decoration: none;
+                margin-left: 10px; 
+                font-size: 14px; 
+            }
+
+            main {
+                flex: 1;
+                padding: 20px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .product-card {
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                margin: 15px;
+                width: 200px;
+                padding: 15px;
+                text-align: center;
+                transition: transform 0.3s, box-shadow 0.3s;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between; 
+            }
+
+            .product-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            }
+
+            .product-card img {
+                max-width: 100%;
+                border-radius: 10px;
+                margin-bottom: 10px;
+            }
+
+            .product-name {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 5px;
+                color: #D9690F;
+            }
+
+            .product-price {
+                font-size: 16px;
+                color: #DBA000;
+            }
+
+            .product-addToCart {
+                margin-top: auto; 
+            }
+
+            .product-addToCart button {
+                background-color: #D9690F;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                padding: 10px;
+                cursor: pointer;
+                font-size: 16px;
+                transition: background-color 0.3s;
+            }
+
+            .product-addToCart button:hover {
+                background-color: #b55a00; 
+            }
+
+            footer {
+                background: #D9690F;
+                color: white;
+                text-align: center;
+                padding: 5px 15px; 
+                box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+                width: 100%;
+                font-size: 14px;
+            }
+
+            @@media (max-width: 600px) {
+                .product-card {
+                    width: 100%;
+                    margin: 10px 0;
+                }
+
+                header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                nav a {
+                    display: block;
+                    margin: 5px 0;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Our Products</h1>
+            <nav>
+                <a href="/Ecommerce/Profile/@Model.User.UserID">Profile</a>
+                <a href="/Ecommerce/Welcome">Logout</a>
+            </nav>
+        </header>
+        <main>
+            @foreach (Product p in Model.Products)
+            {
+                <div class="product-card">
+                    @if (p.ProductImage != null)
+                    {
+                        <img src="@p.ProductImage" alt="Product">
+                    }
+                    else
+                    {
+                        <img src="/placeholder-images-image_large.webp" alt="Product">
+                    }
+                    <a href="/Ecommerce/ShowProduct?pid=@p.ProductID&uid=@Model.User.UserID"><div class="product-name">@p.ProductName</div></a>
+                    <div class="product-price">$@p.Price</div>
+                    <div class="product-addToCart">
+                        <a href="/Ecommerce/AddToCart?pid=@p.ProductID&uid=@Model.User.UserID">
+                            <button>Add To Cart</button>
+                        </a>
+                    </div>
+                </div>
+            }
+        </main>
+        <footer>
+            <p>&copy; 2024 Our Website</p>
+        </footer>
+    </body>
+    </html>
+}

@@ -1,0 +1,178 @@
+﻿@using ecommerce.Models
+@using ecommerce.ViewModel
+@model EcommerceViewModel
+@{
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Product Management</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                background: linear-gradient(to right, #89f7fe, #66a6ff);
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                color: white;
+            }
+
+            header {
+                background-color: rgba(0, 0, 0, 0.6);
+                padding: 15px 0;
+                text-align: center;
+            }
+
+                header a {
+                    color: white;
+                    margin: 0 15px;
+                    text-decoration: none;
+                    font-size: 18px;
+                    transition: color 0.3s;
+                }
+
+                    header a:hover {
+                        color: #66a6ff;
+                    }
+
+            footer {
+                background-color: rgba(0, 0, 0, 0.6);
+                padding: 10px 0;
+                text-align: center;
+                margin-top: auto;
+            }
+
+            .container {
+                flex: 1;
+                padding: 20px;
+            }
+
+            h1 {
+                margin-bottom: 20px;
+                font-size: 28px;
+            }
+
+            .button-container {
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+                .button-container button {
+                    background-color: #ffffff;
+                    color: #66a6ff;
+                    border: none;
+                    padding: 15px 30px;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    transition: background-color 0.3s, color 0.3s;
+                }
+
+                    .button-container button:hover {
+                        background-color: #66a6ff;
+                        color: #ffffff;
+                    }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+
+            table, th, td {
+                border: 1px solid #ffffff;
+            }
+
+            th, td {
+                padding: 12px;
+                text-align: left;
+            }
+
+            th {
+                background-color: rgba(0, 0, 0, 0.7);
+            }
+
+            td {
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+
+            .action-buttons button {
+                background-color: #ffffff;
+                color: #66a6ff;
+                border: none;
+                padding: 8px 12px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 14px;
+                transition: background-color 0.3s, color 0.3s;
+                margin: 0 5px;
+            }
+
+                .action-buttons button:hover {
+                    background-color: #66a6ff;
+                    color: #ffffff;
+                }
+        </style>
+    </head>
+    <body>
+        <header>
+            <a href="/Ecommerce/AdminHome">Products</a>
+            <a href="/Ecommerce/Welcome">Logout</a>
+        </header>
+        <div class="container">
+            <h1>Product Management</h1>
+            <div class="button-container">
+                <a href="/Ecommerce/AddProduct"> <button>Add New Product</button></a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Description</th>
+                        <th>Image</th>
+                        <th>Show</th>
+                        <th>Update</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Product p in Model.Products)
+                    {
+                        <tr>
+                            <td>@p.ProductID</td>
+                            <td>@p.ProductName</td>
+                            <td>$@p.Price</td>
+                            <td>@p.Description</td>
+                            <td>
+                                @if (@p.ProductImage != null)
+                                {
+                                    <img src="@p.ProductImage" alt="Product" style="width: 50px; height: auto;">
+
+                                }
+                                else
+                                {
+                                    <img src="/placeholder-images-image_large.webp" alt="Product" style="width: 50px; height: auto;">
+
+                                }
+                            </td>
+                            <td class="action-buttons"><a href="/Ecommerce/ProductDetails/@p.ProductID"><button>Show</button></td>
+                            <td class="action-buttons"><a href="/Ecommerce/UpdateProduct/@p.ProductID"><button>Update</button></a></td>
+                            <td class="action-buttons"><a href="/Ecommerce/DeleteProduct/@p.ProductID"><button>Delete</button></a></td>
+                        </tr>
+                    }
+                    
+                </tbody>
+            </table>
+        </div>
+        <footer>
+            &copy; 2024 Company Name. All rights reserved.
+        </footer>
+    </body>
+    </html>
+
+}

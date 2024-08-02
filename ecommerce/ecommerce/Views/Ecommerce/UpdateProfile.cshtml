@@ -1,0 +1,208 @@
+﻿@using ecommerce.Models
+@using ecommerce.ViewModel
+@model EcommerceViewModel
+
+@{
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Edit User Profile</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                background: #F4F4F4;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh; 
+                box-sizing: border-box;
+            }
+
+            .profile-container {
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                padding: 20px;
+                display: flex;
+                flex-wrap: wrap; 
+                align-items: center;
+                width: 90%;
+                max-width: 600px;
+                box-sizing: border-box; 
+            }
+
+            .profile-picture {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                object-fit: cover;
+                margin-right: 20px;
+            }
+
+            .profile-details {
+                flex: 1;
+                min-width: 250px; 
+            }
+
+                .profile-details label {
+                    display: block;
+                    font-weight: bold;
+                    margin: 10px 0 5px;
+                }
+
+                .profile-details input[type="text"],
+                .profile-details input[type="date"],
+                .profile-details input[type="file"] {
+                    width: 100%;
+                    padding: 10px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    margin-bottom: 10px;
+                    box-sizing: border-box; 
+                }
+
+                .profile-details input[type="file"] {
+                    display: none;
+                }
+
+            .file-label {
+                padding: 10px;
+                background: #D9A657;
+                color: #000;
+                text-align: center;
+                border-radius: 5px;
+                cursor: pointer;
+                display: block;
+                transition: background-color 0.3s, color 0.3s;
+            }
+
+                .file-label:hover {
+                    background: #DBA000;
+                    color: white;
+                }
+
+            .update-button {
+                background-color: #D9A657;
+                color: #000;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+                transition: background-color 0.3s, color 0.3s;
+                margin-top: 10px;
+            }
+
+                .update-button:hover {
+                    background-color: #DBA000;
+                    color: white;
+                }
+        </style>
+    </head>
+    <body>
+       
+   
+        @if (Model.User != null)
+        {
+            <form method="post" action="/Ecommerce/DoneUpdatingProfile">
+
+            <div class="profile-container">
+                <div>
+                    <div class="image-preview" id="imagePreview">
+                    @if (@Model.User.ProfilePicture != null)
+                    {
+                        <img src="@Model.User.ProfilePicture" alt="Profile Picture" class="profile-picture" id="profileImage">
+                    }
+                    else
+                    {
+                        <img src="/Profile_avatar_placeholder_large.png" alt="default pp" class="profile-picture" id="profileImage">
+                    }
+                    </div>
+                    <div class="form-group">
+                    <label for="image" class="file-label">Change Profile Picture</label>
+                    <input type="file" id="image" style="display: none;" accept="image/*" onchange="previewImage(event); savePhoto(event);">
+                    <input asp-for="User.ProfilePicture" id="PrfileImage" type="text" value="@Model.User.ProfilePicture" hidden>
+                    </div>
+                </div>
+                <div class="profile-details">
+                    
+                        <input asp-for="User.UserID" type="text" id="username" value="@Model.User.UserID" hidden>
+
+                        <label asp-for="User.Username">Username:</label>
+                        <input asp-for="User.Username" type="text" id="username" value="@Model.User.Username">
+                        <span class="text-danger" asp-validation-for="User.Username"></span>
+
+                        <label asp-for="User.BirthDate">Date of Birth:</label>
+                        <input asp-for="User.BirthDate" type="date" id="dateOfBirth" value="@Model.User.BirthDate.ToString("yyyy-MM-dd")">
+
+                        <label asp-for="User.PhoneNumber">Phone Number:</label>
+                        <input asp-for="User.PhoneNumber" type="text" id="phoneNumber" value="@Model.User.PhoneNumber">
+                        <span class="text-danger" asp-validation-for="User.PhoneNumber"></span>
+
+                        <label asp-for="Address.Street">Street:</label>
+                        <input asp-for="Address.Street" type="text" id="street" value="@Model.Address?.Street">
+                        <label asp-for="Address.City">City:</label>
+                        <input asp-for="Address.City" type="text" id="city" value="@Model.Address?.City">
+                        <label asp-for="Address.Country">Country:</label>
+                        <input asp-for="Address.Country" type="text" id="country" value="@Model.Address?.Country">
+
+                        <button type="submit" class="update-button">Update Profile</button>
+                    </div>
+                        </form>
+                
+            
+            
+        }
+        else
+        {
+            <h2>User information is not available.</h2>
+        }
+        <script>
+
+            function previewImage(event) {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    const output = document.getElementById('imagePreview')?.querySelector('img');
+                    if (output) {
+                        output.src = reader.result;
+                    }
+                };
+                reader.readAsDataURL(event.target.files[0]);
+            }
+
+            function savePhoto(event) {
+                const file = event.target.files[0];
+                if (!file) {
+                    console.error('No file selected');
+                    document.getElementById('PrfileImage').value = ""; 
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const base64String = e.target.result;
+                    console.log('Base64 String:', base64String); 
+                    document.getElementById('PrfileImage').value = base64String;
+                };
+
+                reader.onerror = function (e) {
+                    console.error('Error reading file:', e);
+                };
+
+                reader.readAsDataURL(file);
+            }
+
+            document.getElementById('image').addEventListener('change', function (event) {
+                previewImage(event);
+                savePhoto(event);
+            });
+            console.log(document.getElementById('PrfileImage').value);
+
+        </script>
+    </body>
+    </html>
+}

@@ -1,0 +1,254 @@
+﻿@using ecommerce.Models
+@using ecommerce.ViewModel
+
+@model EcommerceViewModel
+
+@{
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>User Profile</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                background: #F4F4F4;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                height: 100vh;
+                overflow-x: hidden; 
+            }
+
+            .profile-container {
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                padding: 20px;
+                display: flex;
+                align-items: center;
+                width: 90%;
+                max-width: 600px;
+                margin: 20px;
+            }
+
+            .profile-picture {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                object-fit: cover;
+                margin-right: 20px;
+            }
+
+            .profile-details {
+                flex: 1;
+            }
+
+                .profile-details h2 {
+                    margin: 0 0 10px 0;
+                    font-size: 24px;
+                    color: #D9690F;
+                }
+
+                .profile-details p {
+                    margin: 5px 0;
+                    font-size: 16px;
+                    color: #555;
+                }
+
+            .update-button {
+                background-color: #D9A657;
+                color: #000;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+                transition: background-color 0.3s, color 0.3s;
+            }
+
+                .update-button:hover {
+                    background-color: #DBA000;
+                    color: white;
+                }
+
+            .cart-container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center; 
+                margin: 20px;
+                width: 90%;
+                max-width: 1200px; 
+            }
+
+            .product-card {
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                margin: 15px;
+                width: calc(25% - 30px); 
+                padding: 15px;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                position: relative; 
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+
+                .product-card:hover {
+                    transform: translateY(-10px);
+                    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+                }
+
+                .product-card img {
+                    max-width: 100%;
+                    border-radius: 10px;
+                    margin-bottom: 10px;
+                }
+
+            .product-name {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 5px;
+                color: #D9690F;
+            }
+
+            .product-price {
+                font-size: 16px;
+                color: #DBA000;
+            }
+
+            .product-addToCart {
+                margin-top: auto; 
+            }
+
+            @@media (max-width: 768px) {
+                .product-card {
+                    width: calc(50% - 30px); 
+                }
+            }
+
+            @@media (max-width: 480px) {
+                .product-card {
+                    width: calc(100% - 30px);
+                }
+            }
+
+            header {
+                background: #D9690F;
+                color: white;
+                padding: 5px 15px; 
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                position: sticky;
+                top: 0;
+                width: 100%;
+                z-index: 1000;
+            }
+
+            .product-addToCart button {
+                background-color: #D9690F;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                padding: 10px;
+                cursor: pointer;
+                font-size: 16px;
+                transition: background-color 0.3s;
+            }
+
+                .product-addToCart button:hover {
+                    background-color: #b55a00; 
+                }
+
+            nav a {
+                color: white;
+                text-decoration: none;
+                margin-left: 10px; 
+                font-size: 14px; 
+            }
+
+            .cart-heading {
+                font-size: 28px;
+                color: #D9690F;
+                text-align: center;
+                margin: 20px 0; 
+            }
+
+        </style>
+    </head>
+    <body>
+        <header>
+            <nav>
+                <a href="/Ecommerce/UserHome/@Model.User.UserID">Home</a>
+                <a href="/Ecommerce/Welcome">Logout</a>
+            </nav>
+        </header>
+        <main>
+        @if (Model.User != null)
+        {
+            <div class="profile-container">
+                @if (Model.User.ProfilePicture != null)
+                {
+                    <img src="@Model.User.ProfilePicture" alt="Profile Picture" class="profile-picture">
+                }
+                else
+                {
+                    <img src="/Profile_avatar_placeholder_large.png" alt="Profile Picture" class="profile-picture">
+                }
+                <div class="profile-details">
+                    <h2>@Model.User.Username</h2>
+                    <p>Age: @(DateTime.Now.Year - Model.User.BirthDate.Year)</p>
+                    <p>Phone Number: @Model.User.PhoneNumber</p>
+                    <p>Address: @Model.Address?.Street, @Model.Address?.City, @Model.Address?.Country</p>
+                </div>
+                <a href="/Ecommerce/UpdateProfile/@Model.User.UserID"><button class="update-button">Update Profile</button></a>
+            </div>
+        }
+        else
+        {
+            <h2>User information is not available.</h2>
+        }
+
+        <h2 class="cart-heading">Cart</h2> 
+        
+        @if (Model.Products == null || !Model.Products.Any())
+        {
+            <h3>There are no products in the cart.</h3>
+        }
+        else
+        {
+            <div class="cart-container">
+                @foreach (var p in Model.Products)
+                {
+                    <div class="product-card">
+                        @if (p.ProductImage != null)
+                        {
+                            <img src="@p.ProductImage" alt="Product">
+                        }
+                        else
+                        {
+                            <img src="/placeholder-images-image_large.webp" alt="Product">
+                        }
+                        <a href="/Ecommerce/ShowProduct/@p.ProductID">
+                            <div class="product-name">@p.ProductName</div>
+                        </a>
+                        <div class="product-price">$@p.Price</div>
+                        <div class="product-addToCart">
+                            <a href="/Ecommerce/RemoveFromCart?pid=@p.ProductID&uid=@Model.User.UserID">
+                                <button> Remove from Cart</button>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        </main>
+    </body>
+    </html>
+}
